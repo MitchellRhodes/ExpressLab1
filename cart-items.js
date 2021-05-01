@@ -69,13 +69,45 @@ cartItems.post('/cart-items', (req, res) => {
 });
 
 
-cartItems.put('/cart-items', (req, res) => {
+cartItems.put('/cart-items/:id', (req, res) => {
+    //look up item
+    const item = items.find(item => item.id === +req.params.id)
+
+    //if it doesn't exist throw error
+    if (!item) {
+        res.status(404).send('ID not found')
+    };
+
+    if (!req.body.product) {
+        res.status(400).send('Product name required');
+    } else if (!req.body.price) {
+        res.status(400).send('Product price required');
+    } else if (!req.body.quantity) {
+        res.status(400).send('Product quantity required');
+    }
+
+    item.product = req.body.product;
+    item.price = req.body.price;
+    item.quantity = req.body.quantity;
+
+    res.status(200).send(item);
 
 });
 
 
-cartItems.delete('/cart-items', (req, res) => {
+cartItems.delete('/cart-items/:id', (req, res) => {
+    //look up item
+    const item = items.find(item => item.id === +req.params.id)
 
+    //if it doesn't exist throw error
+    if (!item) {
+        res.status(404).send('ID not found')
+    };
+
+    const index = items.indexOf(item);
+    items.splice(index, 1);
+
+    res.status(204).send(item);
 });
 
 
