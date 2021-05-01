@@ -22,8 +22,27 @@ const items = [
 
     {
         id: 451,
-        product: '4k Tv',
+        product: '4k proscan Tv',
         price: 299.99,
+        quantity: 1
+    },
+
+    {
+        id: 452,
+        product: '4k samsung Tv',
+        price: 399.99,
+        quantity: 1
+    },
+    {
+        id: 453,
+        product: '4k sony Tv',
+        price: 599.99,
+        quantity: 1
+    },
+    {
+        id: 454,
+        product: '4k LG Tv',
+        price: 399.99,
         quantity: 1
     },
 ]
@@ -40,11 +59,11 @@ cartItems.get('/cart-items', (req, res) => {
         } else if (key === 'prefix') {
             res.status(200).json(items.filter(item => item.product.includes(req.query[key])));
 
-        } //else if (key === 'pageSize') {
+        } else if (key === 'pageSize') {
 
+            res.status(200).json(items.slice(0, req.query[key]));
 
-
-
+        }
     };
 
     res.status(200).json(items);
