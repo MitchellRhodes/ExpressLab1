@@ -30,17 +30,34 @@ const items = [
 
 
 cartItems.get('/cart-items', (req, res) => {
+    for (const key in req.query) {
+        // console.log(key, req.query[key]); //key is maxPrice, req.query[key] is 60
+
+        if (key === 'maxPrice') {
+
+            res.status(200).json(items.filter(item => item.price <= req.query[key]));
+
+        } else if (key === 'prefix') {
+            res.status(200).json(items.filter(item => item.product.includes(req.query[key])));
+
+        } //else if (key === 'pageSize') {
+
+
+
+
+    };
+
     res.status(200).json(items);
 });
 
 
 cartItems.get('/cart-items/:id', (req, res) => {
 
-    const item = items.find(item => item.id === +req.params.id)
+    const item = items.find(item => item.id === +req.params.id);
 
     if (!item) {
         res.status(404).send('ID not found')
-    }
+    };
 
 
     res.status(200).json(
@@ -49,14 +66,21 @@ cartItems.get('/cart-items/:id', (req, res) => {
 });
 
 
+
 cartItems.post('/cart-items', (req, res) => {
     if (!req.body.product) {
+
         res.status(400).send('Product name required');
+
     } else if (!req.body.price) {
+
         res.status(400).send('Product price required');
+
     } else if (!req.body.quantity) {
+
         res.status(400).send('Product quantity required');
-    }
+
+    };
 
     const item = {
         id: items.length + 1,
@@ -64,6 +88,7 @@ cartItems.post('/cart-items', (req, res) => {
         price: req.body.price,
         quantity: req.body.quantity,
     };
+
     items.push(item);
     res.status(201).send(item);
 });
@@ -71,7 +96,7 @@ cartItems.post('/cart-items', (req, res) => {
 
 cartItems.put('/cart-items/:id', (req, res) => {
     //look up item
-    const item = items.find(item => item.id === +req.params.id)
+    const item = items.find(item => item.id === +req.params.id);
 
     //if it doesn't exist throw error
     if (!item) {
@@ -79,11 +104,17 @@ cartItems.put('/cart-items/:id', (req, res) => {
     };
 
     if (!req.body.product) {
+
         res.status(400).send('Product name required');
+
     } else if (!req.body.price) {
+
         res.status(400).send('Product price required');
+
     } else if (!req.body.quantity) {
+
         res.status(400).send('Product quantity required');
+
     }
 
     item.product = req.body.product;
@@ -96,10 +127,9 @@ cartItems.put('/cart-items/:id', (req, res) => {
 
 
 cartItems.delete('/cart-items/:id', (req, res) => {
-    //look up item
+
     const item = items.find(item => item.id === +req.params.id)
 
-    //if it doesn't exist throw error
     if (!item) {
         res.status(404).send('ID not found')
     };
