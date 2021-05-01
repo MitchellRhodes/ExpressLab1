@@ -50,9 +50,13 @@ cartItems.get('/cart-items/:id', (req, res) => {
 
 
 cartItems.post('/cart-items', (req, res) => {
-    if (!req.body.product || !req.body.price || !req.body.quantity) {
-        res.status(400).send('Missing part of item');
-    };
+    if (!req.body.product) {
+        res.status(400).send('Product name required');
+    } else if (!req.body.price) {
+        res.status(400).send('Product price required');
+    } else if (!req.body.quantity) {
+        res.status(400).send('Product quantity required');
+    }
 
     const item = {
         id: items.length + 1,
