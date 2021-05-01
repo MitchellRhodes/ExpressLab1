@@ -43,14 +43,36 @@ cartItems.get('/cart-items/:id', (req, res) => {
     }
 
 
-    res.json(
+    res.status(200).json(
         items.find(item => item.id === +req.params.id)
     );
 });
 
 
+cartItems.post('/cart-items', (req, res) => {
+    if (!req.body.product || !req.body.price || !req.body.quantity) {
+        res.status(400).send('Missing part of item');
+    };
+
+    const item = {
+        id: items.length + 1,
+        product: req.body.product,
+        price: req.body.price,
+        quantity: req.body.quantity,
+    };
+    items.push(item);
+    res.status(201).send(item);
+});
 
 
+cartItems.put('/cart-items', (req, res) => {
+
+});
+
+
+cartItems.delete('/cart-items', (req, res) => {
+
+});
 
 
 module.exports = cartItems;
