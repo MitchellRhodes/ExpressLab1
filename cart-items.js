@@ -36,12 +36,16 @@ cartItems.get('/cart-items', (req, res) => {
 
 cartItems.get('/cart-items/:id', (req, res) => {
 
+    const item = items.find(item => item.id === +req.params.id)
+
+    if (!item) {
+        res.status(404).send('ID not found')
+    }
+
+
     res.json(
         items.find(item => item.id === +req.params.id)
     );
-    // res.status(404).json(
-    //     'ID not found'
-    // );
 });
 
 
