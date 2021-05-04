@@ -77,7 +77,7 @@ cartItems.get('/cart-items/:id', (req, res) => {
     const item = items.find(item => item.id === +req.params.id);
 
     if (!item) {
-        res.status(404).send('ID not found')
+        return res.status(404).send('ID not found')
     };
 
 
@@ -113,7 +113,7 @@ cartItems.put('/cart-items/:id', (req, res) => {
     const item = items.find(item => item.id === +req.params.id);
 
     if (!item) {
-        res.status(404).send('ID not found')
+        return res.status(404).send('ID not found')
     }
 
     const validation = validateItems(req.body);
@@ -136,7 +136,7 @@ cartItems.delete('/cart-items/:id', (req, res) => {
     const item = items.find(item => item.id === +req.params.id)
 
     if (!item) {
-        res.status(404).send('ID not found')
+        return res.status(404).send('ID not found')
     };
 
     const index = items.indexOf(item);
