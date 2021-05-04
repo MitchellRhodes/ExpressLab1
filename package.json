@@ -5,12 +5,17 @@
   "main": "cart-items.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "node server.js",
+    "debug": "nodemon --config ./nodemon.json"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "joi": "^17.4.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.7"
   }
 }
