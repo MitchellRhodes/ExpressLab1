@@ -1,1 +1,25 @@
-<p>products works!</p>
+<button type="button">Add</button>
+
+<div>
+
+    <p>#</p>
+    <p>Product</p>
+    <p>Price</p>
+    <p>Quantity</p>
+    <p>Delete</p>
+    <p>Edit</p>
+
+</div>
+
+
+<ol>
+
+    <li *ngFor='let item of items | async'>
+        <p>{{item.product}}</p>
+        <p>{{item.price}}</p>
+        <p>{{item.quantity}}</p>
+        <button type="button">Delete</button>
+        <button type="button">Edit</button>
+    </li>
+
+</ol>
