@@ -1,3 +1,4 @@
+
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { Observable } from 'rxjs';
 import { CartApiService } from '../cart-api.service';
@@ -39,6 +40,7 @@ export class ProductsComponent implements OnInit {
 
   onSubmit(item: Item) {
     this.service.addItem(item);
+    this.getItems();
   }
 
 }

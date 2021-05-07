@@ -26,7 +26,7 @@ export class CartApiService {
   };
 
   addItem(item: Item) {
-    return this.http.post<Item>(`http://localhost:8888/cart-items`, item, this.createJson)
+    return this.http.post(`http://localhost:8888/cart-items`, item, this.createJson).subscribe(res => console.log(res));
   }
 }
 

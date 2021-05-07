@@ -24,8 +24,8 @@ export class AddProductComponent implements OnInit {
   submitItem() {
     let newItem: any = {
       product: this.createProduct,
-      price: this.createPrice,
-      quantity: this.createQuantity
+      price: +this.createPrice,
+      quantity: +this.createQuantity
     }
     this.submitted.emit(newItem);
   }
