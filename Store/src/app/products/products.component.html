@@ -1,4 +1,8 @@
-<button type="button" class="bigButton greenBackground roundEdges">ADD</button>
+<button type="button" class="bigButton greenBackground roundEdges" (click)='revealForm()'>ADD</button>
+
+<div class="addProductContainer">
+    <app-add-product [ngClass]="{'isShown' : isRevealed}" (submitted)='onSubmit($event)'></app-add-product>
+</div>
 
 <div class="table">
 
@@ -35,7 +39,7 @@
                 </td>
 
                 <td>
-                    <button type="button">Delete</button>
+                    <button type="button" (click)='removeItem(item.id)'>Delete</button>
                 </td>
 
                 <td>

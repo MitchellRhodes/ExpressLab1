@@ -1,0 +1,9 @@
+header{
+    background-color: rgb(78, 75, 75);
+    display: flex;
+    justify-content: center;
+}
+
+h1{
+    color: white;
+}

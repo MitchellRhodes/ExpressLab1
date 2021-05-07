@@ -12,3 +12,17 @@
     border-radius: 5px;
 }
 
+
+.addProductConatiner{
+    position: relative;
+}
+
+app-add-product{
+    visibility: hidden;
+    position: absolute;
+}
+
+.isShown{
+    visibility: visible;
+}
+

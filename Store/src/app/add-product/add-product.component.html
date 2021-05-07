@@ -1,0 +1,24 @@
+<div class="mainForm">
+
+    <button class="circle upperRight">X</button>
+
+    <label for="product">
+        Product
+    </label>
+    <input type="text" [(ngModel)]='createProduct'>
+
+
+    <label for="price">
+        Price
+    </label>
+    <input type="text" [(ngModel)]='createPrice'>
+
+
+    <label for="quantity">
+        Quantity
+    </label>
+    <input type="text" [(ngModel)]='createQuantity'>
+
+    <button type="submit" (click)='submitItem()'>Submit</button>
+
+</div>
