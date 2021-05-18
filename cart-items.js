@@ -13,11 +13,13 @@ const db = pgp({
 
 
 cartItems.get('/cart-items', async (req, res) => {
-    let filtered = res.json(await db.many(`SELECT * FROM shopping_cart`));
+    let filtered = await db.many(`SELECT * FROM shopping_cart`);
 
-    // if (req.query.maxPrice) {
-    //     filtered = filtered.filter(item => item.price <= +req.query.maxPrice);
-    // }
+    if (req.query.maxPrice) {
+        filtered = await db.many(`SELECT * FROM shopping_cart WHERE price <= $(maxPrice)`, {
+            maxPrice: +req.query.maxPrice
+        })
+    }
 
     // if (req.query.prefix) {
     //     filtered = filtered.filter(item => item.product.includes(req.query.prefix));
