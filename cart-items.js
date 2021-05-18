@@ -49,24 +49,22 @@ const items = [
 
 
 cartItems.get('/cart-items', (req, res) => {
-    for (const key in req.query) {
-        // console.log(key, req.query[key]); //key is maxPrice, req.query[key] is 60
+    let filtered = items;
 
-        if (key === 'maxPrice') {
+    if (req.query.maxPrice) {
+        filtered = filtered.filter(item => item.price <= +req.query.maxPrice);
+    }
 
-            res.status(200).json(items.filter(item => item.price <= req.query[key]));
+    if (req.query.prefix) {
+        filtered = filtered.filter(item => item.product.includes(req.query.prefix));
+    }
 
-        } else if (key === 'prefix') {
-            res.status(200).json(items.filter(item => item.product.includes(req.query[key])));
+    if (req.query.pageSize) {
+        filtered = filtered.slice(0, req.query.pageSize);
+    }
 
-        } else if (key === 'pageSize') {
 
-            res.status(200).json(items.slice(0, req.query[key]));
-
-        }
-    };
-
-    res.status(200).json(items);
+    res.status(200).json(filtered);
 });
 
 
