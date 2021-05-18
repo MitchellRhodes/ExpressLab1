@@ -1,67 +1,31 @@
 const express = require('express');
 const Joi = require("joi");
+const pgp = require('pg-promise')();
+
 const cartItems = express.Router();
 
 cartItems.use(express.json());
 
-
-const items = [
-    {
-        id: 1,
-        product: 'milk',
-        price: 2.99,
-        quantity: 1
-    },
-
-    {
-        id: 2,
-        product: 'resident evil 8',
-        price: 59.99,
-        quantity: 1
-    },
-
-    {
-        id: 3,
-        product: '4k proscan Tv',
-        price: 299.99,
-        quantity: 1
-    },
-
-    {
-        id: 4,
-        product: '4k samsung Tv',
-        price: 399.99,
-        quantity: 1
-    },
-    {
-        id: 5,
-        product: '4k sony Tv',
-        price: 599.99,
-        quantity: 1
-    },
-    {
-        id: 6,
-        product: '4k LG Tv',
-        price: 399.99,
-        quantity: 1
-    },
-]
+const db = pgp({
+    database: 'ExpressShopDB'
+});
 
 
-cartItems.get('/cart-items', (req, res) => {
-    let filtered = items;
 
-    if (req.query.maxPrice) {
-        filtered = filtered.filter(item => item.price <= +req.query.maxPrice);
-    }
+cartItems.get('/cart-items', async (req, res) => {
+    let filtered = res.json(await db.many(`SELECT * FROM shopping_cart`));
 
-    if (req.query.prefix) {
-        filtered = filtered.filter(item => item.product.includes(req.query.prefix));
-    }
+    // if (req.query.maxPrice) {
+    //     filtered = filtered.filter(item => item.price <= +req.query.maxPrice);
+    // }
 
-    if (req.query.pageSize) {
-        filtered = filtered.slice(0, req.query.pageSize);
-    }
+    // if (req.query.prefix) {
+    //     filtered = filtered.filter(item => item.product.includes(req.query.prefix));
+    // }
+
+    // if (req.query.pageSize) {
+    //     filtered = filtered.slice(0, req.query.pageSize);
+    // }
 
 
     res.status(200).json(filtered);
