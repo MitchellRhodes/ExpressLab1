@@ -21,13 +21,17 @@ cartItems.get('/cart-items', async (req, res) => {
         })
     }
 
-    // if (req.query.prefix) {
-    //     filtered = filtered.filter(item => item.product.includes(req.query.prefix));
-    // }
+    if (req.query.prefix) {
+        filtered = await db.many(`SELECT * FROM shopping_cart WHERE product LIKE $(product)%`, {
+            product: req.query.prefix
+        })
+    }
 
-    // if (req.query.pageSize) {
-    //     filtered = filtered.slice(0, req.query.pageSize);
-    // }
+    if (req.query.pageSize) {
+        filtered = await db.many(`SELECT * FROM shopping_cart LIMIT $(pageSize)`, {
+            pageSize: req.query.pageSize
+        })
+    }
 
 
     res.status(200).json(filtered);
