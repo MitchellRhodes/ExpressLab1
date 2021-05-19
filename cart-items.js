@@ -70,14 +70,19 @@ cartItems.post('/cart-items', async (req, res) => {
     };
 
 
-    const item = {
-        id: items.length + 1,
+    await db.none(`INSERT INTO shopping_cart (product,price,quantity) VALUES($(product),$(price), $(quantity))`, {
         product: req.body.product,
         price: req.body.price,
-        quantity: req.body.quantity,
-    };
+        quantity: req.body.quantity
+    })
 
-    items.push(item);
+    const item = await db.one(`SELECT * FROM shopping_cart WHERE product = $(product)`, {
+        product: req.body.product,
+        price: req.body.price,
+        quantity: req.body.quantity
+    })
+
+
     res.status(201).json(item);
 });
 
