@@ -21,8 +21,9 @@ cartItems.get('/cart-items', async (req, res) => {
         })
     }
 
+    //ask how to handle % on the product since it is injected and what I tried didn;t work
     if (req.query.prefix) {
-        filtered = await db.many(`SELECT * FROM shopping_cart WHERE product LIKE $(product)%`, {
+        filtered = await db.many(`SELECT * FROM shopping_cart WHERE product LIKE $(product)`, {
             product: req.query.prefix
         })
     }
