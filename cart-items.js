@@ -117,16 +117,22 @@ cartItems.put('/cart-items/:id', async (req, res) => {
 
 cartItems.delete('/cart-items/:id', async (req, res) => {
 
-    const item = items.find(item => item.id === +req.params.id)
+    const item = await db.oneOrNone(`SELECT * FROM shopping_cart WHERE shopping_cart.id = $(id)`, {
+        id: +req.params.id,
+    })
 
     if (!item) {
         return res.status(404).send('ID not found')
     };
 
-    const index = items.indexOf(item);
-    items.splice(index, 1);
+    const deleteItem = await db.none(`DELETE FROM shopping_cart WHERE shopping_cart.id = $(id)`, {
+        id: +req.params.id,
+    })
 
-    res.status(204).json(item);
+    // const index = items.indexOf(item);
+    // items.splice(index, 1);
+
+    res.status(204).json(deleteItem);
 });
 
 
