@@ -89,7 +89,9 @@ cartItems.post('/cart-items', async (req, res) => {
 
 cartItems.put('/cart-items/:id', async (req, res) => {
     //look up item
-    const item = items.find(item => item.id === +req.params.id);
+    const item = await db.oneOrNone(`SELECT * FROM shopping_cart WHERE shopping_cart.id = $(id)`, {
+        id: +req.params.id,
+    })
 
     if (!item) {
         return res.status(404).send('ID not found')
@@ -101,9 +103,12 @@ cartItems.put('/cart-items/:id', async (req, res) => {
         return res.status(400).send(validation.error.details[0].message);
     };
 
-    item.product = req.body.product;
-    item.price = req.body.price;
-    item.quantity = req.body.quantity;
+    const updateItem = await db.oneOrNone(`UPDATE shopping_cart SET product = $(product), price = $(price), quantity = $(quantity) WHERE id = $(id) `, {
+        id: +req.params.id,
+        product: req.body.product,
+        price: req.body.price,
+        quantity: req.body.quantity
+    })
 
     res.status(200).json(item);
 
