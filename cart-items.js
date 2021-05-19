@@ -15,13 +15,15 @@ const db = pgp({
 cartItems.get('/cart-items', async (req, res) => {
     let filtered = await db.many(`SELECT * FROM shopping_cart`);
 
+    //figure out how to do all queries after you figure out prefix LIKE 
+
     if (req.query.maxPrice) {
         filtered = await db.many(`SELECT * FROM shopping_cart WHERE price <= $(maxPrice)`, {
             maxPrice: +req.query.maxPrice
         })
     }
 
-    //ask how to handle % on the product since it is injected and what I tried didn;t work
+    //ask how to handle % on the product since it is injected and what I tried didn't work
     if (req.query.prefix) {
         filtered = await db.many(`SELECT * FROM shopping_cart WHERE product LIKE $(product)`, {
             product: req.query.prefix
@@ -41,9 +43,12 @@ cartItems.get('/cart-items', async (req, res) => {
 
 
 
-cartItems.get('/cart-items/:id', (req, res) => {
+cartItems.get('/cart-items/:id', async (req, res) => {
 
-    const item = items.find(item => item.id === +req.params.id);
+    const item = await db.oneOrNone(`SELECT * FROM shopping_cart WHERE shopping_cart.id = $(id)`, {
+        id: +req.params.id
+    })
+
 
     if (!item) {
         return res.status(404).send('ID not found')
@@ -56,7 +61,7 @@ cartItems.get('/cart-items/:id', (req, res) => {
 
 
 
-cartItems.post('/cart-items', (req, res) => {
+cartItems.post('/cart-items', async (req, res) => {
 
     const validation = validateItems(req.body);
 
@@ -77,7 +82,7 @@ cartItems.post('/cart-items', (req, res) => {
 });
 
 
-cartItems.put('/cart-items/:id', (req, res) => {
+cartItems.put('/cart-items/:id', async (req, res) => {
     //look up item
     const item = items.find(item => item.id === +req.params.id);
 
@@ -100,7 +105,7 @@ cartItems.put('/cart-items/:id', (req, res) => {
 });
 
 
-cartItems.delete('/cart-items/:id', (req, res) => {
+cartItems.delete('/cart-items/:id', async (req, res) => {
 
     const item = items.find(item => item.id === +req.params.id)
 
