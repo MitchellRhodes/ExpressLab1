@@ -1,66 +1,39 @@
 const express = require('express');
 const Joi = require("joi");
+const pgp = require('pg-promise')();
+
 const cartItems = express.Router();
 
 cartItems.use(express.json());
 
-
-const items = [
-    {
-        id: 1,
-        product: 'milk',
-        price: 2.99,
-        quantity: 1
-    },
-
-    {
-        id: 2,
-        product: 'resident evil 8',
-        price: 59.99,
-        quantity: 1
-    },
-
-    {
-        id: 3,
-        product: '4k proscan Tv',
-        price: 299.99,
-        quantity: 1
-    },
-
-    {
-        id: 4,
-        product: '4k samsung Tv',
-        price: 399.99,
-        quantity: 1
-    },
-    {
-        id: 5,
-        product: '4k sony Tv',
-        price: 599.99,
-        quantity: 1
-    },
-    {
-        id: 6,
-        product: '4k LG Tv',
-        price: 399.99,
-        quantity: 1
-    },
-]
+const db = pgp({
+    database: 'ExpressShopDB'
+});
 
 
-cartItems.get('/cart-items', (req, res) => {
-    let filtered = items;
+
+cartItems.get('/cart-items', async (req, res) => {
+    let filtered = await db.many(`SELECT * FROM shopping_cart`);
+
+    //figure out how to do all queries after you figure out prefix LIKE 
 
     if (req.query.maxPrice) {
-        filtered = filtered.filter(item => item.price <= +req.query.maxPrice);
+        filtered = await db.many(`SELECT * FROM shopping_cart WHERE price <= $(maxPrice)`, {
+            maxPrice: +req.query.maxPrice
+        })
     }
 
+    //ask how to handle % on the product since it is injected and what I tried didn't work
     if (req.query.prefix) {
-        filtered = filtered.filter(item => item.product.includes(req.query.prefix));
+        filtered = await db.many(`SELECT * FROM shopping_cart WHERE product LIKE $(product)`, {
+            product: req.query.prefix
+        })
     }
 
     if (req.query.pageSize) {
-        filtered = filtered.slice(0, req.query.pageSize);
+        filtered = await db.many(`SELECT * FROM shopping_cart LIMIT $(pageSize)`, {
+            pageSize: req.query.pageSize
+        })
     }
 
 
@@ -70,9 +43,12 @@ cartItems.get('/cart-items', (req, res) => {
 
 
 
-cartItems.get('/cart-items/:id', (req, res) => {
+cartItems.get('/cart-items/:id', async (req, res) => {
 
-    const item = items.find(item => item.id === +req.params.id);
+    const item = await db.oneOrNone(`SELECT * FROM shopping_cart WHERE shopping_cart.id = $(id)`, {
+        id: +req.params.id
+    })
+
 
     if (!item) {
         return res.status(404).send('ID not found')
@@ -85,7 +61,7 @@ cartItems.get('/cart-items/:id', (req, res) => {
 
 
 
-cartItems.post('/cart-items', (req, res) => {
+cartItems.post('/cart-items', async (req, res) => {
 
     const validation = validateItems(req.body);
 
@@ -94,21 +70,28 @@ cartItems.post('/cart-items', (req, res) => {
     };
 
 
-    const item = {
-        id: items.length + 1,
+    await db.none(`INSERT INTO shopping_cart (product,price,quantity) VALUES($(product),$(price), $(quantity))`, {
         product: req.body.product,
         price: req.body.price,
-        quantity: req.body.quantity,
-    };
+        quantity: req.body.quantity
+    })
 
-    items.push(item);
+    const item = await db.one(`SELECT * FROM shopping_cart WHERE product = $(product)`, {
+        product: req.body.product,
+        price: req.body.price,
+        quantity: req.body.quantity
+    })
+
+
     res.status(201).json(item);
 });
 
 
-cartItems.put('/cart-items/:id', (req, res) => {
+cartItems.put('/cart-items/:id', async (req, res) => {
     //look up item
-    const item = items.find(item => item.id === +req.params.id);
+    const item = await db.oneOrNone(`SELECT * FROM shopping_cart WHERE shopping_cart.id = $(id)`, {
+        id: +req.params.id,
+    })
 
     if (!item) {
         return res.status(404).send('ID not found')
@@ -120,27 +103,36 @@ cartItems.put('/cart-items/:id', (req, res) => {
         return res.status(400).send(validation.error.details[0].message);
     };
 
-    item.product = req.body.product;
-    item.price = req.body.price;
-    item.quantity = req.body.quantity;
+    const updateItem = await db.oneOrNone(`UPDATE shopping_cart SET product = $(product), price = $(price), quantity = $(quantity) WHERE id = $(id) `, {
+        id: +req.params.id,
+        product: req.body.product,
+        price: req.body.price,
+        quantity: req.body.quantity
+    })
 
     res.status(200).json(item);
 
 });
 
 
-cartItems.delete('/cart-items/:id', (req, res) => {
+cartItems.delete('/cart-items/:id', async (req, res) => {
 
-    const item = items.find(item => item.id === +req.params.id)
+    const item = await db.oneOrNone(`SELECT * FROM shopping_cart WHERE shopping_cart.id = $(id)`, {
+        id: +req.params.id,
+    })
 
     if (!item) {
         return res.status(404).send('ID not found')
     };
 
-    const index = items.indexOf(item);
-    items.splice(index, 1);
+    const deleteItem = await db.none(`DELETE FROM shopping_cart WHERE shopping_cart.id = $(id)`, {
+        id: +req.params.id,
+    })
 
-    res.status(204).json(item);
+    // const index = items.indexOf(item);
+    // items.splice(index, 1);
+
+    res.status(204).json(deleteItem);
 });
 
 
