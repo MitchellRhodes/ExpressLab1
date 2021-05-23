@@ -26,7 +26,7 @@ cartItems.get('/cart-items', async (req, res) => {
     //ask how to handle % on the product since it is injected and what I tried didn't work
     if (req.query.prefix) {
         filtered = await db.many(`SELECT * FROM shopping_cart WHERE product LIKE $(product)`, {
-            product: req.query.prefix
+            product: '%' + req.query.prefix + '%'
         })
     }
 
@@ -103,7 +103,7 @@ cartItems.put('/cart-items/:id', async (req, res) => {
         return res.status(400).send(validation.error.details[0].message);
     };
 
-    const updateItem = await db.oneOrNone(`UPDATE shopping_cart SET product = $(product), price = $(price), quantity = $(quantity) WHERE id = $(id) `, {
+    await db.oneOrNone(`UPDATE shopping_cart SET product = $(product), price = $(price), quantity = $(quantity) WHERE id = $(id) `, {
         id: +req.params.id,
         product: req.body.product,
         price: req.body.price,
