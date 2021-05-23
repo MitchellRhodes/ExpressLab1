@@ -8,12 +8,20 @@ import { FormsModule } from '@angular/forms';
 import { ProductsComponent } from './products/products.component';
 import { AddProductComponent } from './add-product/add-product.component';
 import { AuthModule } from '@auth0/auth0-angular';
+import { LoginButtonComponent } from './login-button/login-button.component';
+import { LogoutButtonComponent } from './logout-button/logout-button.component';
+import { UserProfileComponent } from './user-profile/user-profile.component';
+
 
 @NgModule({
   declarations: [
     AppComponent,
     ProductsComponent,
-    AddProductComponent
+    AddProductComponent,
+    LoginButtonComponent,
+    LogoutButtonComponent,
+    UserProfileComponent,
+
   ],
   imports: [
     BrowserModule,

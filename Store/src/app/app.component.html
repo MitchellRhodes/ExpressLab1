@@ -1,7 +1,11 @@
 <header>
+  <app-user-profile></app-user-profile>
   <h1>SHOPPING CART</h1>
+  <app-login-button *ngIf="(auth.isAuthenticated$ | async) === false "></app-login-button>
+  <app-logout-button *ngIf="(auth.isAuthenticated$ | async)"></app-logout-button>
 </header>
 
 <app-products></app-products>
+
 
 <router-outlet></router-outlet>

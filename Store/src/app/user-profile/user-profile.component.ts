@@ -2,12 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from '@auth0/auth0-angular';
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  selector: 'app-user-profile',
+  templateUrl: './user-profile.component.html',
+  styleUrls: ['./user-profile.component.css']
 })
-export class AppComponent implements OnInit {
-  title = 'Store';
+export class UserProfileComponent implements OnInit {
 
   constructor(public auth: AuthService) { }
 
